@@ -9,6 +9,9 @@ using Microsoft.WindowsAzure;
 using Microsoft.WindowsAzure.Diagnostics;
 using Microsoft.WindowsAzure.ServiceRuntime;
 using Microsoft.WindowsAzure.Storage;
+using Microsoft.Azure;
+using Microsoft.ServiceBus.Messaging;
+using Microsoft.ServiceBus;
 
 namespace SmartBuildRole
 {
@@ -16,6 +19,11 @@ namespace SmartBuildRole
     {
         private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
         private readonly ManualResetEvent runCompleteEvent = new ManualResetEvent(false);
+        private const string queueName = "build";
+        private const string messageField = "buildstatus";
+        QueueClient client = null;
+
+        readonly ManualResetEvent completedEvent = new ManualResetEvent(false);
 
         public override void Run()
         {
@@ -36,11 +44,18 @@ namespace SmartBuildRole
             // Set the maximum number of concurrent connections
             ServicePointManager.DefaultConnectionLimit = 12;
 
-            // For information on handling configuration changes
-            // see the MSDN topic at https://go.microsoft.com/fwlink/?LinkId=166357.
+            // Create the queue if it does not exist already
+            string connectionString = CloudConfigurationManager.GetSetting("Microsoft.ServiceBus.ConnectionString");
+            var namespaceManager = NamespaceManager.CreateFromConnectionString(connectionString);
+            if (!namespaceManager.QueueExists(queueName))
+            {
+                namespaceManager.CreateQueue(queueName);
+            }
+
+            // Initialize the connection to Service Bus Queue
+            client = QueueClient.CreateFromConnectionString(connectionString, queueName);
 
             bool result = base.OnStart();
-
             Trace.TraceInformation("SmartBuildRole has been started");
 
             return result;
@@ -60,11 +75,19 @@ namespace SmartBuildRole
 
         private async Task RunAsync(CancellationToken cancellationToken)
         {
-            // TODO: Replace the following with your own logic.
             while (!cancellationToken.IsCancellationRequested)
             {
-                Trace.TraceInformation("Working");
-                await Task.Delay(1000);
+                BrokeredMessage message = new BrokeredMessage();
+
+                // TODO: replace this with a real logic!
+                string buildStatus = "broken";
+
+                message.Properties[messageField] = buildStatus;
+
+                await client.SendAsync(message);
+
+                Trace.TraceInformation($"Build status: {buildStatus}");
+                await Task.Delay(30000);
             }
         }
     }

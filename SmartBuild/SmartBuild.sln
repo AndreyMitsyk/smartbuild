@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "SmartBuild", "SmartBuild.ccproj", "{204C7915-897E-434C-986C-E5DE01E3CAEA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartBuildRole", "SmartBuildRole\SmartBuildRole.csproj", "{464FB369-44FE-482A-BDC4-03D3C7A0CAED}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{204C7915-897E-434C-986C-E5DE01E3CAEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{204C7915-897E-434C-986C-E5DE01E3CAEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{204C7915-897E-434C-986C-E5DE01E3CAEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{204C7915-897E-434C-986C-E5DE01E3CAEA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{464FB369-44FE-482A-BDC4-03D3C7A0CAED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{464FB369-44FE-482A-BDC4-03D3C7A0CAED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{464FB369-44FE-482A-BDC4-03D3C7A0CAED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{464FB369-44FE-482A-BDC4-03D3C7A0CAED}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

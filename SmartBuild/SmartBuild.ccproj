@@ -12,6 +12,7 @@
     <AssemblyName>SmartBuild</AssemblyName>
     <StartDevelopmentStorage>True</StartDevelopmentStorage>
     <Name>SmartBuild</Name>
+    <PackageEnableRemoteDebugger>False</PackageEnableRemoteDebugger>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -47,12 +48,15 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Profiles" />
     <Folder Include="SmartBuildRoleContent\" />
     <Folder Include="SmartBuildWorkerContent\" />
   </ItemGroup>
   <ItemGroup>
     <DiagnosticsConfiguration Include="SmartBuildRoleContent\diagnostics.wadcfgx" />
-    <DiagnosticsConfiguration Include="SmartBuildWorkerContent\diagnostics.wadcfgx" />
+  </ItemGroup>
+  <ItemGroup>
+    <PublishProfile Include="Profiles\SmartBuildProduction.azurePubxml" />
   </ItemGroup>
   <!-- Import the target files for this project template -->
   <PropertyGroup>

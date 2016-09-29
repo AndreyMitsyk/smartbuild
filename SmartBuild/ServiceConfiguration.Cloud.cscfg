@@ -3,7 +3,8 @@
   <Role name="SmartBuildRole">
     <Instances count="1" />
     <ConfigurationSettings>
-      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="UseDevelopmentStorage=true" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="DefaultEndpointsProtocol=https;AccountName=sevenmiservice;AccountKey=p7950auAaQKzndpUCEH41JourqiZgHy25i2ePuTT44pUhHq604iBkcuXa/VXkW7VuvsGgmr9Hw7/LprPFxss7w==" />
+      <Setting name="APPINSIGHTS_INSTRUMENTATIONKEY" value="7208c132-183b-468b-8d9f-85778227ad9e" />
     </ConfigurationSettings>
   </Role>
 </ServiceConfiguration>

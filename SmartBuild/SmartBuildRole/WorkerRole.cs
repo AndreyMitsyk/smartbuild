@@ -3,9 +3,8 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.WindowsAzure.ServiceRuntime;
+using Microsoft.Azure.NotificationHubs;
 using Microsoft.Azure;
-using Microsoft.ServiceBus.Messaging;
-using Microsoft.ServiceBus;
 using TeamCitySharp;
 
 namespace SmartBuildRole
@@ -14,9 +13,8 @@ namespace SmartBuildRole
     {
         private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
         private readonly ManualResetEvent runCompleteEvent = new ManualResetEvent(false);
-        private const string queueName = "build";
-        private const string messageField = "buildstatus";
-        QueueClient client = null;
+        private const string hubName = "smartbuildhub";
+        NotificationHubClient hub = null;
         private string buildId = "0";
 
         readonly ManualResetEvent completedEvent = new ManualResetEvent(false);
@@ -41,15 +39,9 @@ namespace SmartBuildRole
             ServicePointManager.DefaultConnectionLimit = 12;
 
             // Create the queue if it does not exist already
-            string connectionString = CloudConfigurationManager.GetSetting("Microsoft.ServiceBus.ConnectionString");
-            var namespaceManager = NamespaceManager.CreateFromConnectionString(connectionString);
-            if (!namespaceManager.QueueExists(queueName))
-            {
-                namespaceManager.CreateQueue(queueName);
-            }
+            string connectionString = CloudConfigurationManager.GetSetting("Microsoft.NotificationHub.ConnectionString");
 
-            // Initialize the connection to Service Bus Queue
-            client = QueueClient.CreateFromConnectionString(connectionString, queueName);
+            hub = NotificationHubClient.CreateClientFromConnectionString(connectionString, hubName);
 
             bool result = base.OnStart();
             Trace.TraceInformation("SmartBuildRole has been started");
@@ -80,11 +72,10 @@ namespace SmartBuildRole
                 if (buildId != lastBuild.Id)
                 {
                     buildId = lastBuild.Id;
-
-                    BrokeredMessage message = new BrokeredMessage();
                     string buildStatus = lastBuild.Status;
 
-                    message.Properties[messageField] = buildStatus;
+                    var toast = string.Format(@"<toast><visual><binding template=""BuildStatus""><text id=""1"">{0}</text></binding></visual></toast>", buildStatus);
+                    await hub.SendWindowsNativeNotificationAsync(toast);
 
                     Trace.TraceInformation($"Build status: {buildStatus}");
                 }

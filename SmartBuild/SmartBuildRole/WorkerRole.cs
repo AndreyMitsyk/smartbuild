@@ -1,17 +1,12 @@
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.WindowsAzure;
-using Microsoft.WindowsAzure.Diagnostics;
 using Microsoft.WindowsAzure.ServiceRuntime;
-using Microsoft.WindowsAzure.Storage;
 using Microsoft.Azure;
 using Microsoft.ServiceBus.Messaging;
 using Microsoft.ServiceBus;
+using TeamCitySharp;
 
 namespace SmartBuildRole
 {
@@ -22,6 +17,7 @@ namespace SmartBuildRole
         private const string queueName = "build";
         private const string messageField = "buildstatus";
         QueueClient client = null;
+        private string buildId = "0";
 
         readonly ManualResetEvent completedEvent = new ManualResetEvent(false);
 
@@ -75,19 +71,25 @@ namespace SmartBuildRole
 
         private async Task RunAsync(CancellationToken cancellationToken)
         {
+            var client = new TeamCityClient("52.169.222.26:8090");
+            client.ConnectAsGuest();
+
             while (!cancellationToken.IsCancellationRequested)
             {
-                BrokeredMessage message = new BrokeredMessage();
+                var lastBuild = client.Builds.LastBuildByAgent("localhost");
+                if (buildId != lastBuild.Id)
+                {
+                    buildId = lastBuild.Id;
 
-                // TODO: replace this with a real logic!
-                string buildStatus = "broken";
+                    BrokeredMessage message = new BrokeredMessage();
+                    string buildStatus = lastBuild.Status;
 
-                message.Properties[messageField] = buildStatus;
+                    message.Properties[messageField] = buildStatus;
 
-                await client.SendAsync(message);
+                    Trace.TraceInformation($"Build status: {buildStatus}");
+                }
 
-                Trace.TraceInformation($"Build status: {buildStatus}");
-                await Task.Delay(30000);
+                await Task.Delay(10000);
             }
         }
     }

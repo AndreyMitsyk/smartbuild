@@ -13,7 +13,7 @@ namespace SmartBuildRole
     {
         private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
         private readonly ManualResetEvent runCompleteEvent = new ManualResetEvent(false);
-        private const string hubName = "smartbuildhub";
+        private const string hubNames = "smartbuildhub";
         NotificationHubClient hub = null;
         private string buildId = "0";
 

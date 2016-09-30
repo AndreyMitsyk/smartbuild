@@ -74,7 +74,7 @@ namespace SmartBuildRole
                     buildId = lastBuild.Id;
                     string buildStatus = lastBuild.Status;
 
-                    var toast = string.Format(@"<toast><visual><binding template=""BuildStatus""><text id=""1"">{0}</text></binding></visual></toast>", buildStatus);
+                    var toast = @"<toast><visual><binding template=""ToastText01""><text id=""1"">" + buildStatus + "</text></binding></visual></toast>";
                     await hub.SendWindowsNativeNotificationAsync(toast);
 
                     Trace.TraceInformation($"Build status: {buildStatus}");
